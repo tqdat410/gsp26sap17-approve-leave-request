@@ -10,7 +10,7 @@ sap.ui.define([
     function (UIComponent, Device, models) {
         "use strict";
 
-        return UIComponent.extend("com.gsp26.sap17.alr.approveleaverequest.Component", {
+        return UIComponent.extend("com.gsp26.sap17.approveleaverequest.Component", {
             metadata: {
                 manifest: "json"
             },

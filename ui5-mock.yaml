@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: com.gsp26.sap17.alr.approveleaverequest
+  name: com.gsp26.sap17.approveleaverequest
 type: application
 server:
   customMiddleware:

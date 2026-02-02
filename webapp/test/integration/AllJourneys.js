@@ -7,7 +7,7 @@ sap.ui.define([
 
 	Opa5.extendConfig({
 		arrangements: new Startup(),
-		viewNamespace: "com.gsp26.sap17.alr.approveleaverequest.view.",
+		viewNamespace: "com.gsp26.sap17.approveleaverequest.view.",
 		autoWait: true
 	});
 });

@@ -14,7 +14,7 @@ sap.ui.define([
 			// start the app UI component
 			this.iStartMyUIComponent({
 				componentConfig: {
-					name: "com.gsp26.sap17.alr.approveleaverequest",
+					name: "com.gsp26.sap17.approveleaverequest",
 					async: true
 				},
 				hash: oOptions.hash,

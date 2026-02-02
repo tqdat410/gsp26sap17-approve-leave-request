@@ -1,4 +1,4 @@
-<mvc:View controllerName="com.gsp26.sap17.alr.approveleaverequest.controller.Main"
+<mvc:View controllerName="com.gsp26.sap17.approveleaverequest.controller.Main"
     xmlns:mvc="sap.ui.core.mvc" displayBlock="true"
     xmlns="sap.m">
     <Page id="page" title="{i18n>title}">

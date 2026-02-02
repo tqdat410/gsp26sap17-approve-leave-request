@@ -4,7 +4,7 @@ sap.ui.define([
 function (Controller) {
     "use strict";
 
-    return Controller.extend("com.gsp26.sap17.alr.approveleaverequest.controller.Main", {
+    return Controller.extend("com.gsp26.sap17.approveleaverequest.controller.Main", {
         onInit: function () {
 
         }
