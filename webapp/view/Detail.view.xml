@@ -1,0 +1,150 @@
+<mvc:View
+    controllerName="com.gsp26.sap17.approveleaverequest.controller.Detail"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+
+
+    <Page 
+       id="detailPage"
+       title="{i18n>approvalDetailTitle}"
+       showNavButton="true"
+       navButtonPress=".onNavBack">
+       
+       <content>
+         <ObjectHeader
+         id="objectHeader"
+         title="{
+            path: 'LeaveType',
+            formatter: '.formatter.formatLeaveTypeText'
+         }"
+          number="{ 
+            path :'DaysCount',
+            formatter: '.formatter.formatDays'
+           
+            }"
+            numberUnit="{i18n>days}">
+            <statuses>
+              <ObjectStatus 
+                text="{
+                  path: 'Status',
+                  formatter: '.formatter.formatStatusText'
+                
+                }"
+                state="{
+                   path :'Status',
+                   formatter: '.formatter.formatStatusState'
+                }"/>
+            </statuses>
+            <attributes>
+              <ObjectAttribute
+                 title="{i18n>employee}"
+                 text="{EmployeeID}"/>
+              <ObjectAttribute 
+                 title="{i18n>startDate}"
+                 text="{
+                   path: 'StartDate',
+                   type: 'sap.ui.model.odata.type.Date',
+                   formatOptions: {
+                     pattern: 'yyyy-MM-dd'
+                   }
+                 }"
+              />
+              <ObjectAttribute
+                 title="{i18n>endDate}"
+                 text="{ 
+                   path: 'EndDate',
+                   type : 'sap.ui.model.odata.type.Date',
+                   formatOptions: {
+                     pattern: 'yyyy-MM-dd'
+                   }  
+                  }"
+              />
+            </attributes>
+            </ObjectHeader>
+
+            <f:SimpleForm
+               editable="false"
+               layout="ResponsiveGridLayout"
+               labelSpanXL="4"
+               labelSpanL="4"
+               labelSpanM ="4"
+               labelSpanS="12"
+               emptySpanXL="0"
+               emptySpanL="0"
+               emptySpanM="0"
+               emptySpanS="0"
+               columnsXL="2"
+               columnsL="2"
+               columnsM="1"
+            >
+
+            <f:content>
+              <core:Title text="{i18n>requestDetails}"/>
+
+              <Label text="{i18n>reason}"/>
+              <Text text="{Reason}"/>
+
+                <Label text="{i18n>rejectReason}" visible="{= ${path: 'Status', targetType: 'any'} === 'REJECTED' }"/>
+                <Text text="{RejectReason}" visible="{= ${path: 'Status', targetType: 'any'} === 'REJECTED' }"/>
+
+                <Label text="{i18n>approver}"/>
+                <Text text="{ApprovedBy}"/>
+
+                <Label text ="{i18n>approvedAt}"/>
+                <Text text="{ 
+                   path: 'ApprovedAt',
+                   formatter :'.formatter.formatDateTime'  
+                 }"/>
+
+                 <core:Title text="{i18n>auditInfo}"/>
+
+                 <Label text ="{i18n>createdBy}"/>
+                 <Text text="{CreatedBy}"/>
+
+                 <Label text ="{i18n>createdAt}"/>
+                 <Text text="{
+                        path: 'CreatedAt',
+                        formatter: '.formatter.formatDateTime'
+                    }"/>
+
+                 <Label text ="{i18n>changedBy}"/>
+                 <Text text="{LocalLastChangedBy}"/>
+
+                 <Label text="{i18n>changedAt}"/>
+                  <Text text="{ 
+                     path: 'LocalLastChangedAt',
+                     formatter: '.formatter.formatDateTime'
+                  }"/>
+            </f:content>
+            </f:SimpleForm>
+
+       </content>
+
+
+       <footer>
+         <OverflowToolbar visible="{= ${path: 'Status', targetType: 'any'} === 'SUBMITTED' }" >
+           <ToolbarSpacer/>
+            <Button 
+               text="{i18n>approve}"
+               type="Accept"
+               icon="sap-icon://accept"
+               press=".onApprove"/>
+             <Button
+               text="{i18n>reject}"
+               type="Reject"
+               icon="sap-icon://decline"
+               press=".onReject"/>  
+             
+          
+         </OverflowToolbar>
+       
+
+       
+       </footer>
+       </Page>
+
+
+    </mvc:View>
+

@@ -58,7 +58,7 @@
                 <Property Name="Reason" Type="Edm.String" Nullable="false"/>
                 <Property Name="Status" Type="Edm.String" Nullable="false" MaxLength="1"/>
                 <Property Name="RejectReason" Type="Edm.String" Nullable="false"/>
-                <Property Name="ApproverID" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="ApprovedBy" Type="Edm.String" Nullable="false" MaxLength="12"/>
                 <Property Name="ApprovedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="CreatedAt" Type="Edm.DateTimeOffset" Precision="7"/>
                 <Property Name="CreatedBy" Type="Edm.String" Nullable="false" MaxLength="12"/>
@@ -163,7 +163,7 @@
                 <Annotation Term="SAP__common.Heading" String="Status"/>
                 <Annotation Term="SAP__common.QuickInfo" String="Object Processing Status"/>
             </Annotations>
-            <Annotations Target="SAP__self.LeaveRequestType/ApproverID">
+            <Annotations Target="SAP__self.LeaveRequestType/ApprovedBy">
                 <Annotation Term="SAP__core.Computed"/>
                 <Annotation Term="SAP__common.IsUpperCase"/>
                 <Annotation Term="SAP__common.Label" String="User Name"/>

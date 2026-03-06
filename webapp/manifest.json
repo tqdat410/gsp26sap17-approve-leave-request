@@ -17,7 +17,7 @@
     },
     "dataSources": {
       "mainService": {
-        "uri": "/sap/opu/odata4/iwbep/all/srvd/sap/y17_sd_leaverequest/0001/",
+        "uri": "/sap/opu/odata4/iwbep/all/srvd/sap/z17_sd_leaverequest/0001/",
         "type": "OData",
         "settings": {
           "annotations": [],
@@ -58,7 +58,7 @@
     }
   },
   "sap.ui5": {
-    "flexEnabled": true,
+    "flexEnabled": false,
     "dependencies": {
       "minUI5Version": "1.108.33",
       "libs": {
@@ -112,6 +112,13 @@
           "target": [
             "TargetMain"
           ]
+        },
+         {
+          "name": "RouteDetail",
+          "pattern": "detail/{requestId}",
+          "target": [
+            "TargetDetail"
+          ]
         }
       ],
       "targets": {
@@ -121,8 +128,15 @@
           "clearControlAggregation": false,
           "viewId": "Main",
           "viewName": "Main"
-        }
+        },
+          "TargetDetail": {
+            "viewType": "XML",
+            "transition": "slide",
+            "clearControlAggregation": false,
+            "viewId": "Detail",
+            "viewName": "Detail"
       }
+    }
     },
     "rootView": {
       "viewName": "com.gsp26.sap17.approveleaverequest.view.App",
