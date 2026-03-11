@@ -47,16 +47,11 @@ function (Controller,JSONModel,Filter,FilterOperator,MessageBox,MessageToast,Fra
         var oBinding = oTable.getBinding("items");
         if (oBinding) {
             oBinding.refresh();  
+            oBinding.attachEventOnce("dataReceived", function() {
+                this._updatePendingCount();
+            }.bind(this));
         }
     }
-
-    // ✔ Refresh pendingCount binding
-    if (this._oPendingBinding) {
-        this._oPendingBinding.refresh();
-    }
-
-    // ✔ Update counter
-    this._updatePendingCount();
     },
 
 
@@ -65,21 +60,21 @@ function (Controller,JSONModel,Filter,FilterOperator,MessageBox,MessageToast,Fra
      * @private
      */
     _updatePendingCount: function () {
-        var oModel = this.getOwnerComponent().getModel();
+        var oTable = this.byId("approvalTable");
+        if (!oTable) { return; }
+        
+        var oBinding = oTable.getBinding("items");
+        if (!oBinding) { return; }
 
-       if (!this._oPendingBinding) {
-                this._oPendingBinding = oModel.bindList("/LeaveRequest", null, null, [
-                    new Filter("Status", FilterOperator.EQ, "SUBMITTED")
-                ]);
-            }
+     
+        oBinding.requestContexts(0, Infinity).then(function(aContexts) {
+          
+            var iPendingCount = aContexts.filter(function(oContext) {
+                return oContext.getProperty("Status") === "SUBMITTED";
+            }).length;
 
-        var oBinding = this._oPendingBinding;
-        // Get count using OData V4 API
-        oBinding.requestContexts(0, Infinity).then(function() {
-            var iCount = oBinding.getCount();
-            this.getView().getModel("viewModel").setProperty("/pendingCount", iCount);
+            this.getView().getModel("viewModel").setProperty("/pendingCount", iPendingCount);
         }.bind(this)).catch(function(oError) {
-            // Fallback: set count to 0 or log error
             console.error("Error loading pending count:", oError);
             this.getView().getModel("viewModel").setProperty("/pendingCount", 0);
         }.bind(this));
@@ -143,26 +138,27 @@ function (Controller,JSONModel,Filter,FilterOperator,MessageBox,MessageToast,Fra
                 and: true
             }) : [], "Application");
 
+            
             this._updatePendingCount();
         },
 
 
-           onRefresh: function () {
-            var oTable = this.byId("approvalTable");
-       if (oTable && oTable.getBinding("items")) {
-        oTable.getBinding("items").refresh();
-       }
+        onRefresh: function (bSuppressToast) {
+    var oTable = this.byId("approvalTable");
+    var oBinding = oTable ? oTable.getBinding("items") : null;
 
-       // 2. Refresh Binding của bộ đếm và cập nhật lại Property
-       if (this._oPendingBinding) {
-        this._oPendingBinding.refresh();
-        // Sau khi refresh binding, ta cần gọi lại hàm lấy count
-        this._updatePendingCount(); 
-        } else {
-        // Nếu chưa có binding thì khởi tạo lần đầu
-        this._updatePendingCount();
-       }
-        },
+    if (oBinding) {
+        oBinding.refresh();
+        oBinding.attachEventOnce("dataReceived", function() {
+            this._updatePendingCount();
+        }.bind(this));
+    }
+
+   
+    if (bSuppressToast !== true) {
+        MessageToast.show("Update successful");
+    }
+},
 
         /**
          * Called when the approve button is pressed
@@ -207,7 +203,7 @@ function (Controller,JSONModel,Filter,FilterOperator,MessageBox,MessageToast,Fra
             oActionBinding.execute().then(function () {
                 this.getView().setBusy(false);
                 MessageToast.show(oResourceBundle.getText("approveSuccess"));
-                this.onRefresh();
+                this.onRefresh(true); // Truyền true để không hiện thông báo "Update successful" đè lên
                 }.bind(this)).catch(function (oError) {
                 this.getView().setBusy(false);
                 // Sanitize error message to prevent XSS
@@ -230,9 +226,9 @@ function (Controller,JSONModel,Filter,FilterOperator,MessageBox,MessageToast,Fra
         },
 
          /**
-         * Opens the reject dialog
-         * @private
-         */
+          * Opens the reject dialog
+          * @private
+          */
         _openRejectDialog: function () {
             var oView = this.getView();
 
@@ -302,7 +298,7 @@ function (Controller,JSONModel,Filter,FilterOperator,MessageBox,MessageToast,Fra
             oActionBinding.execute().then(function () {
                 this.getView().setBusy(false);
                 MessageToast.show(oResourceBundle.getText("rejectSuccess"));
-                this.onRefresh();
+                this.onRefresh(true); // Truyền true để không hiện thông báo "Update successful" đè lên
             }.bind(this)).catch(function (oError) {
                 this.getView().setBusy(false);
                 // Sanitize error message to prevent XSS
@@ -336,11 +332,4 @@ function (Controller,JSONModel,Filter,FilterOperator,MessageBox,MessageToast,Fra
             });
         }
     });
-
-
-
-
-
-
-
 });
