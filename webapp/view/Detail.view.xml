@@ -1,17 +1,15 @@
-<mvc:View
+﻿<mvc:View
     controllerName="com.gsp26.sap17.approveleaverequest.controller.Detail"
     xmlns="sap.m"
-    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
     xmlns:f="sap.ui.layout.form"
     xmlns:l="sap.ui.layout"
-    xmlns:core="sap.ui.core">
-
-    <Page 
+    xmlns:mvc="sap.ui.core.mvc">
+    <Page
         id="detailPage"
         title="{i18n>approvalDetailTitle}"
         showNavButton="true"
         navButtonPress=".onNavBack">
-        
         <content>
             <ObjectHeader
                 id="objectHeader"
@@ -19,16 +17,15 @@
                     path: 'LeaveType',
                     formatter: '.formatter.formatLeaveTypeText'
                 }"
-                number="{ 
-                    path :'DaysCount',
+                number="{
+                    path: 'DaysCount',
                     formatter: '.formatter.formatDays'
                 }"
                 numberUnit="{i18n>days}"
                 backgroundDesign="Solid"
                 icon="sap-icon://calendar">
-                
                 <statuses>
-                    <ObjectStatus 
+                    <ObjectStatus
                         text="{
                             path: 'Status',
                             formatter: '.formatter.formatStatusText'
@@ -37,14 +34,14 @@
                             path: 'Status',
                             formatter: '.formatter.formatStatusState'
                         }"
-                        inverted="true"/> 
+                        inverted="true" />
                 </statuses>
 
                 <attributes>
                     <ObjectAttribute
                         title="{i18n>employee}"
-                        text="{EmployeeID}"/>
-                    <ObjectAttribute 
+                        text="{EmployeeID}" />
+                    <ObjectAttribute
                         title="{i18n>startDate}"
                         text="{
                             path: 'StartDate',
@@ -52,85 +49,111 @@
                             formatOptions: {
                                 pattern: 'dd/MM/yyyy'
                             }
-                        }"/>
+                        }" />
                     <ObjectAttribute
                         title="{i18n>endDate}"
-                        text="{ 
+                        text="{
                             path: 'EndDate',
-                            type : 'sap.ui.model.odata.type.Date',
+                            type: 'sap.ui.model.odata.type.Date',
                             formatOptions: {
                                 pattern: 'dd/MM/yyyy'
-                            }   
-                        }"/>
+                            }
+                        }" />
                 </attributes>
             </ObjectHeader>
 
-            <l:Grid defaultSpan="L6 M12 S12" containerQuery="true" class="sapUiResponsiveContentPadding detailInfoGrid">
+            <l:Grid
+                defaultSpan="L6 M12 S12"
+                containerQuery="true"
+                class="sapUiResponsiveContentPadding detailInfoGrid">
                 <f:SimpleForm
                     editable="false"
                     layout="ResponsiveGridLayout"
-                    labelSpanL="4" labelSpanM="4" labelSpanS="12"
-                    columnsL="1" columnsM="1">
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    labelSpanS="12"
+                    columnsL="1"
+                    columnsM="1">
                     <f:content>
-                        <core:Title text="{i18n>requestDetails}" level="H4"/>
-                        <Label text="{i18n>reason}"/>
-                        <Text text="{Reason}"/>
-                        
-                        <Label text="{i18n>rejectReason}" 
-                               visible="{= ${path: 'Status', targetType: 'any'} === 'REJECTED' || ${path: 'Status', targetType: 'any'} === 'Rejected' }"/>
-                        <Text text="{RejectReason}" 
-                              visible="{= ${path: 'Status', targetType: 'any'} === 'REJECTED' || ${path: 'Status', targetType: 'any'} === 'Rejected' }"/>
-                        
-                        <Label text="{i18n>approver}"/>
-                        <Text text="{ApprovedBy}"/>
-                        
-                        <Label text="{i18n>approvedAt}"/>
-                        <Text text="{ 
-                            path: 'ApprovedAt',
-                            formatter: '.formatter.formatDateTime'  
-                        }"/>
+                        <core:Title text="{i18n>requestDetails}" level="H4" />
+                        <Label text="{i18n>reason}" />
+                        <Text text="{Reason}" />
+
+                        <Label
+                            text="{i18n>rejectReason}"
+                            visible="{=
+                                ${path: 'Status', targetType: 'any'} === 'REJECTED' ||
+                                ${path: 'Status', targetType: 'any'} === 'Rejected'
+                            }" />
+                        <Text
+                            text="{RejectReason}"
+                            visible="{=
+                                ${path: 'Status', targetType: 'any'} === 'REJECTED' ||
+                                ${path: 'Status', targetType: 'any'} === 'Rejected'
+                            }" />
+
+                        <Label text="{i18n>approver}" />
+                        <Text text="{ApprovedBy}" />
+
+                        <Label text="{i18n>approvedAt}" />
+                        <Text
+                            text="{
+                                path: 'ApprovedAt',
+                                formatter: '.formatter.formatDateTime'
+                            }" />
                     </f:content>
                 </f:SimpleForm>
 
                 <f:SimpleForm
                     editable="false"
                     layout="ResponsiveGridLayout"
-                    labelSpanL="4" labelSpanM="4" labelSpanS="12"
-                    columnsL="1" columnsM="1">
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    labelSpanS="12"
+                    columnsL="1"
+                    columnsM="1">
                     <f:content>
-                        <core:Title text="{i18n>auditInfo}" level="H4"/>
-                        <Label text="{i18n>createdBy}"/>
-                        <Text text="{CreatedBy}"/>
-                        <Label text="{i18n>createdAt}"/>
-                        <Text text="{
+                        <core:Title text="{i18n>auditInfo}" level="H4" />
+                        <Label text="{i18n>createdBy}" />
+                        <Text text="{CreatedBy}" />
+                        <Label text="{i18n>createdAt}" />
+                        <Text
+                            text="{
                                 path: 'CreatedAt',
                                 formatter: '.formatter.formatDateTime'
-                            }"/>
-                        <Label text="{i18n>changedBy}"/>
-                        <Text text="{LocalLastChangedBy}"/>
-                        <Label text="{i18n>changedAt}"/>
-                        <Text text="{ 
-                            path: 'LocalLastChangedAt',
-                            formatter: '.formatter.formatDateTime'
-                        }"/>
+                            }" />
+                        <Label text="{i18n>changedBy}" />
+                        <Text text="{LocalLastChangedBy}" />
+                        <Label text="{i18n>changedAt}" />
+                        <Text
+                            text="{
+                                path: 'LocalLastChangedAt',
+                                formatter: '.formatter.formatDateTime'
+                            }" />
                     </f:content>
                 </f:SimpleForm>
             </l:Grid>
         </content>
 
         <footer>
-            <OverflowToolbar visible="{= ${path: 'Status', targetType: 'any'} !== 'APPROVED' &amp;&amp; ${path: 'Status', targetType: 'any'} !== 'REJECTED' &amp;&amp; ${path: 'Status', targetType: 'any'} !== 'Approved' &amp;&amp; ${path: 'Status', targetType: 'any'} !== 'Rejected' }">
-                <ToolbarSpacer/>
-                <Button 
+            <OverflowToolbar
+                visible="{=
+                    ${path: 'Status', targetType: 'any'} !== 'APPROVED' &amp;&amp;
+                    ${path: 'Status', targetType: 'any'} !== 'REJECTED' &amp;&amp;
+                    ${path: 'Status', targetType: 'any'} !== 'Approved' &amp;&amp;
+                    ${path: 'Status', targetType: 'any'} !== 'Rejected'
+                }">
+                <ToolbarSpacer />
+                <Button
                     text="{i18n>approve}"
                     type="Accept"
                     icon="sap-icon://accept"
-                    press=".onApprove"/>
+                    press=".onApprove" />
                 <Button
                     text="{i18n>reject}"
                     type="Reject"
                     icon="sap-icon://decline"
-                    press=".onReject"/>  
+                    press=".onReject" />
             </OverflowToolbar>
         </footer>
     </Page>

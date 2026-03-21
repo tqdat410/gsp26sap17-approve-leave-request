@@ -1,97 +1,155 @@
-<mvc:View controllerName="com.gsp26.sap17.approveleaverequest.controller.Main"
+﻿<mvc:View
+    controllerName="com.gsp26.sap17.approveleaverequest.controller.Main"
     xmlns="sap.m"
-    xmlns:mvc="sap.ui.core.mvc"
-    xmlns:core="sap.ui.core">
-    
-    <Page id="approvalListPage" title="{i18n>approvalListTitle}" showNavButton="false">
+    xmlns:core="sap.ui.core"
+    xmlns:mvc="sap.ui.core.mvc">
+    <Page
+        id="approvalListPage"
+        title="{i18n>approvalListTitle}"
+        showNavButton="false">
         <subHeader>
             <Toolbar>
-                <Label text="{i18n>status}:" labelFor="statusFilter"/>
+                <Label text="{i18n>status}:" labelFor="statusFilter" />
                 <Select id="statusFilter" width="150px" change=".onFilterChange">
-                    <core:Item key="" text="{i18n>all}"/>
-                    <core:Item key="SUBMITTED" text="{i18n>statusSubmitted}"/>
-                    <core:Item key="APPROVED" text="{i18n>statusApproved}"/>
-                    <core:Item key="REJECTED" text="{i18n>statusRejected}"/>
+                    <core:Item key="" text="{i18n>all}" />
+                    <core:Item key="SUBMITTED" text="{i18n>statusSubmitted}" />
+                    <core:Item key="APPROVED" text="{i18n>statusApproved}" />
+                    <core:Item key="REJECTED" text="{i18n>statusRejected}" />
                 </Select>
 
-                <ToolbarSpacer/>
+                <ToolbarSpacer />
 
-                <Label text="{i18n>dateFrom}:" labelFor="dateFromFilter"/>
-                <DatePicker id="dateFromFilter" width="160px" valueFormat="yyyy-MM-dd" displayFormat="medium" change=".onFilterChange"/>
+                <Label text="{i18n>dateFrom}:" labelFor="dateFromFilter" />
+                <DatePicker
+                    id="dateFromFilter"
+                    width="160px"
+                    valueFormat="yyyy-MM-dd"
+                    displayFormat="medium"
+                    change=".onFilterChange" />
 
-                <Label text="{i18n>dateTo}:" labelFor="dateToFilter"/>
-                <DatePicker id="dateToFilter" width="160px" valueFormat="yyyy-MM-dd" displayFormat="medium" change=".onFilterChange"/>
+                <Label text="{i18n>dateTo}:" labelFor="dateToFilter" />
+                <DatePicker
+                    id="dateToFilter"
+                    width="160px"
+                    valueFormat="yyyy-MM-dd"
+                    displayFormat="medium"
+                    change=".onFilterChange" />
 
-                <ToolbarSpacer/>
+                <ToolbarSpacer />
 
-                <SearchField id="employeeSearch" width="200px" placeholder="{i18n>searchEmployee}" search=".onEmployeeSearch"/>
-                <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh"/>
+                <SearchField
+                    id="employeeSearch"
+                    width="200px"
+                    placeholder="{i18n>searchEmployee}"
+                    search=".onEmployeeSearch" />
+                <Button icon="sap-icon://refresh" type="Transparent" press=".onRefresh" />
             </Toolbar>
         </subHeader>
 
         <content>
-            <Table id="approvalTable" 
-                   items="{ path: '/LeaveRequest', sorter: { path: 'CreatedAt', descending: true } }" 
-                   growing="true" 
-                   growingThreshold="20" 
-                   sticky="HeaderToolbar,ColumnHeaders">
-                
+            <Table
+                id="approvalTable"
+                items="{
+                    path: '/LeaveRequest',
+                    sorter: { path: 'CreatedAt', descending: true },
+                    filters: [
+                        { path: 'Status', operator: 'NE', value1: 'NOT_SUBMIT' }
+                    ]
+                }"
+                growing="true"
+                growingThreshold="20"
+                sticky="HeaderToolbar,ColumnHeaders">
                 <headerToolbar>
                     <OverflowToolbar>
-                        <Title text="{i18n>leaveRequests}" level="H2"/>
-                        <ToolbarSpacer/>
-                        <Label text="{i18n>pendingCount}:" class="sapUiTinyMarginEnd"/>
-                        <ObjectStatus text="{viewModel>/pendingCount}" state="Error" /> 
+                        <Title text="{i18n>leaveRequests}" level="H2" />
+                        <ToolbarSpacer />
+                        <Label text="{i18n>pendingCount}:" class="sapUiTinyMarginEnd" />
+                        <ObjectStatus text="{viewModel>/pendingCount}" state="Error" />
                     </OverflowToolbar>
                 </headerToolbar>
 
                 <columns>
-                    <Column width="10%"><Text text="{i18n>employee}"/></Column>
-                    <Column width="12%"><Text text="{i18n>leaveType}"/></Column>
-                    <Column width="15%"><Text text="{i18n>dateRange}"/></Column>
-                    <Column width="8%" hAlign="Center"><Text text="{i18n>days}"/></Column>
-                    <Column width="auto"><Text text="{i18n>reason}"/></Column>
-                    <Column width="10%" hAlign="Center"><Text text="{i18n>status}"/></Column>
-                    <Column width="200px" hAlign="Center"><Text text="{i18n>actions}"/></Column>
+                    <Column width="10%">
+                        <Text text="{i18n>employee}" />
+                    </Column>
+                    <Column width="12%">
+                        <Text text="{i18n>leaveType}" />
+                    </Column>
+                    <Column width="15%">
+                        <Text text="{i18n>dateRange}" />
+                    </Column>
+                    <Column width="8%" hAlign="Center">
+                        <Text text="{i18n>days}" />
+                    </Column>
+                    <Column width="auto">
+                        <Text text="{i18n>reason}" />
+                    </Column>
+                    <Column width="10%" hAlign="Center">
+                        <Text text="{i18n>status}" />
+                    </Column>
+                    <Column width="200px" hAlign="Center">
+                        <Text text="{i18n>actions}" />
+                    </Column>
                 </columns>
 
                 <items>
                     <ColumnListItem type="Navigation" press=".onItemPress">
                         <cells>
                             <Text text="{EmployeeID}" />
-                            
-                            <Text text="{path: 'LeaveType', formatter: '.formatter.formatLeaveTypeText'}"/>
-                            
+                            <Text
+                                text="{
+                                    path: 'LeaveType',
+                                    formatter: '.formatter.formatLeaveTypeText'
+                                }" />
+
                             <VBox>
-                                <Text text="{path: 'StartDate', type: 'sap.ui.model.odata.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' }}"/>
-                                <Text text="{i18n>dateRangeTo}" class="sapUiTinyMarginTopBottom sapUiSmallText" textAlign="Center"/>
-                                <Text text="{path: 'EndDate', type: 'sap.ui.model.odata.type.Date', formatOptions: { pattern: 'dd/MM/yyyy' }}"/>
+                                <Text
+                                    text="{
+                                        path: 'StartDate',
+                                        type: 'sap.ui.model.odata.type.Date',
+                                        formatOptions: { pattern: 'dd/MM/yyyy' }
+                                    }" />
+                                <Text
+                                    text="{i18n>dateRangeTo}"
+                                    class="sapUiTinyMarginTopBottom sapUiSmallText"
+                                    textAlign="Center" />
+                                <Text
+                                    text="{
+                                        path: 'EndDate',
+                                        type: 'sap.ui.model.odata.type.Date',
+                                        formatOptions: { pattern: 'dd/MM/yyyy' }
+                                    }" />
                             </VBox>
 
-                            <ObjectNumber 
-                                number="{path: 'DaysCount', formatter: '.formatter.formatDays'}" 
-                                unit="{= ${DaysCount} > 1 ? 'days' : 'day' }"/>
-                            
-                            <Text text="{Reason}" maxLines="2" wrapping="true"/>
+                            <ObjectNumber
+                                number="{
+                                    path: 'DaysCount',
+                                    formatter: '.formatter.formatDays'
+                                }"
+                                unit="{= ${DaysCount} > 1 ? 'days' : 'day' }" />
 
-                            <ObjectStatus 
+                            <Text text="{Reason}" maxLines="2" wrapping="true" />
+
+                            <ObjectStatus
                                 text="{path: 'Status', formatter: '.formatter.formatStatusText'}"
                                 state="{path: 'Status', formatter: '.formatter.formatStatusState'}"
-                                inverted="true" /> 
+                                inverted="true" />
 
                             <HBox justifyContent="Center">
-                                <Button icon="sap-icon://accept" 
-                                        type="Accept" 
-                                        text="{i18n>approve}" 
-                                        press=".onApprovePress" 
-                                        class="sapUiTinyMarginEnd"
-                                        visible="{= ${path: 'Status', targetType: 'any'} !== 'APPROVED' &amp;&amp; ${path: 'Status', targetType: 'any'} !== 'REJECTED' }"/>
-                                
-                                <Button icon="sap-icon://decline" 
-                                        type="Reject" 
-                                        text="{i18n>reject}" 
-                                        press=".onRejectPress"
-                                        visible="{= ${path: 'Status', targetType: 'any'} !== 'APPROVED' &amp;&amp; ${path: 'Status', targetType: 'any'} !== 'REJECTED' }"/>
+                                <Button
+                                    icon="sap-icon://accept"
+                                    type="Accept"
+                                    text="{i18n>approve}"
+                                    press=".onApprovePress"
+                                    class="sapUiTinyMarginEnd"
+                                    visible="{= ${path: 'Status', targetType: 'any'} !== 'APPROVED' &amp;&amp; ${path: 'Status', targetType: 'any'} !== 'REJECTED' }" />
+
+                                <Button
+                                    icon="sap-icon://decline"
+                                    type="Reject"
+                                    text="{i18n>reject}"
+                                    press=".onRejectPress"
+                                    visible="{= ${path: 'Status', targetType: 'any'} !== 'APPROVED' &amp;&amp; ${path: 'Status', targetType: 'any'} !== 'REJECTED' }" />
                             </HBox>
                         </cells>
                     </ColumnListItem>

@@ -29,6 +29,39 @@ sap.ui.define([
 
                 // set the device model
                 this.setModel(models.createDeviceModel(), "device");
+                this._handleStartupNavigation();
+            },
+
+            _handleStartupNavigation: function () {
+                // nếu URL đã có deep link thì không xử lý nữa
+                if (window.location.hash.indexOf("&/") !== -1) {
+                    return;
+                }
+
+                var oData = this.getComponentData() || {};
+                var oParams = oData.startupParameters || {};
+                var sRequestId = this._getStartupParam(oParams, "RequestID") || this._getStartupParam(oParams, "RequestId");
+                if (!sRequestId) {
+                    return;
+                }
+
+                sRequestId = this._normalizeGuid(sRequestId);
+
+                this.getRouter().navTo("RouteDetail", { requestId: sRequestId }, true);
+            },
+
+            _getStartupParam: function (oParams, sName) {
+                return (oParams[sName] && oParams[sName][0]) || "";
+            },
+
+            _normalizeGuid: function (s) {
+                if (!s) {
+                    return s;
+                }
+                if (s.length === 32) {
+                    return s.substr(0, 8) + "-" + s.substr(8, 4) + "-" + s.substr(12, 4) + "-" + s.substr(16, 4) + "-" + s.substr(20);
+                }
+                return s;
             }
         });
     }
