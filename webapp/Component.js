@@ -5,7 +5,7 @@
 sap.ui.define([
         "sap/ui/core/UIComponent",
         "sap/ui/Device",
-        "com/gsp26/sap17/alr/approveleaverequest/model/models"
+        "com/gsp26/sap17/approveleaverequest/model/models"
     ],
     function (UIComponent, Device, models) {
         "use strict";

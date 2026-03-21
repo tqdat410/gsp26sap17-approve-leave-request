@@ -1,1 +1,46 @@
 /* Enter your custom styles here */
+
+/* Target SAP UI5 Title element inside SimpleForm */
+.sapUiFormTitle {
+    text-align: center !important;
+    background: var(--sapUiGroupTitleBackground, var(--sapUiBaseBG, #f0f0f0));
+    color: var(--sapUiGroupTitleTextColor, var(--sapUiText, #1a1a1a));
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--sapUiGroupTitleBorderColor, var(--sapUiContentForegroundBorderColor, #d9d9d9));
+}
+
+/* Add padding for better spacing */
+.sapUiFormTitle h4 {
+    text-align: center !important;
+    margin: 0 !important;
+    color: inherit;
+}
+
+/* Ensure title text inherits the correct theme color */
+.sapUiFormTitle .sapUiFormTitleText,
+.sapUiFormTitle span {
+    color: inherit;
+}
+
+/* Dark theme fallback to guarantee contrast */
+.sapUiTheme-sap_fiori_3_dark .sapUiFormTitle,
+.sapUiTheme-sap_horizon_dark .sapUiFormTitle {
+    background: var(--sapUiShellColor, #1e242b);
+    background-color: var(--sapUiShellColor, #1e242b);
+    color: var(--sapUiGroupTitleTextColor, var(--sapUiBaseText, #ffffff));
+    border-color: var(--sapUiContentForegroundBorderColor, #3a4450);
+}
+
+.sapUiTheme-sap_fiori_3_dark .sapUiFormTitle .sapUiFormTitleText,
+.sapUiTheme-sap_fiori_3_dark .sapUiFormTitle span,
+.sapUiTheme-sap_horizon_dark .sapUiFormTitle .sapUiFormTitleText,
+.sapUiTheme-sap_horizon_dark .sapUiFormTitle span {
+    color: var(--sapUiGroupTitleTextColor, var(--sapUiBaseText, #ffffff));
+}
+
+/* Add spacing between header and detail containers */
+.detailInfoGrid {
+    margin-top: 16px;
+}
+
