@@ -366,15 +366,6 @@
                     );
             },
 
-            /**
-             * Determines if actions are enabled based on status
-             * @param {string} sStatus The status code
-             * @returns {boolean} True if actions are enabled
-             */
-         //   isActionEnabled: function (sStatus) {
-        //        return sStatus === "N";
-         //   },
-
             _clearMessages: function () {
                 var oMessageManager = sap.ui.getCore().getMessageManager();
                 if (oMessageManager) {

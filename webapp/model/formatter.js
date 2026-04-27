@@ -44,19 +44,7 @@ sap.ui.define([], function () {
             return parseInt(vDays, 10).toString();
         },
 
-        /**
-         * Checks if actions (Approve/Reject) should be visible
-         * @param {string} sStatus - Status code
-         * @returns {boolean} True if visible
-         */
-        isActionVisible: function (sStatus) {
-            console.log("[formatter.isActionVisible] Status:", sStatus, "| Type:", typeof sStatus, "| Result:", sStatus === "N");
-            // Only show for New status, explicitly return false for undefined/null
-            if (sStatus === undefined || sStatus === null) {
-                return false;
-            }
-            return sStatus === "N";
-        },
+
     formatStatusText: function (sStatus) {
     var mStatusText = {
         "SUBMITTED": "Submitted",
