@@ -38,7 +38,7 @@
                 // View Model for UI state
                 var oViewModel = new JSONModel({
                     pendingCount: 0,
-                    selectedRequest: null
+                   // selectedRequest: null
                 });
                 this.getView().setModel(oViewModel, "viewModel");
             },
@@ -215,6 +215,7 @@
                 var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
 
                 this.getView().setBusy(true);
+                this._clearMessages();
 
                 // Invoke OData V4 action
                 var oActionBinding = oContext.getModel().bindContext(
@@ -228,7 +229,13 @@
                     .then(
                         function () {
                             this.getView().setBusy(false);
-                            MessageToast.show(oResourceBundle.getText("approveSuccess"));
+                            var sBackendMessage = this._getBackendMessageText(oContext, [
+                                "Success",
+                                "Information"
+                            ]);
+                            MessageToast.show(
+                                sBackendMessage || oResourceBundle.getText("approveSuccess")
+                            );
                             this.onRefresh(true); // Suppress the "Update successful" toast
                         }.bind(this)
                     )
@@ -236,9 +243,7 @@
                         function (oError) {
                             this.getView().setBusy(false);
                             // Sanitize error message to prevent XSS
-                            var sMessage = oError.message
-                                ? encodeXML(oError.message)
-                                : oResourceBundle.getText("approveError");
+                           var sMessage = oError.message || oResourceBundle.getText("approveError");
                             MessageBox.error(sMessage);
                         }.bind(this)
                     );
@@ -324,6 +329,7 @@
                 var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
 
                 this.getView().setBusy(true);
+                this._clearMessages();
 
                 // Invoke OData V4 action with parameter
                 var oActionBinding = oContext.getModel().bindContext(
@@ -340,7 +346,13 @@
                     .then(
                         function () {
                             this.getView().setBusy(false);
-                            MessageToast.show(oResourceBundle.getText("rejectSuccess"));
+                            var sBackendMessage = this._getBackendMessageText(oContext, [
+                                "Success",
+                                "Information"
+                            ]);
+                            MessageToast.show(
+                                sBackendMessage || oResourceBundle.getText("rejectSuccess")
+                            );
                             this.onRefresh(true); // Suppress the "Update successful" toast
                         }.bind(this)
                     )
@@ -348,9 +360,7 @@
                         function (oError) {
                             this.getView().setBusy(false);
                             // Sanitize error message to prevent XSS
-                            var sMessage = oError.message
-                                ? encodeXML(oError.message)
-                                : oResourceBundle.getText("rejectError");
+                          var sMessage = oError.message || oResourceBundle.getText("rejectError");
                             MessageBox.error(sMessage);
                         }.bind(this)
                     );
@@ -361,8 +371,56 @@
              * @param {string} sStatus The status code
              * @returns {boolean} True if actions are enabled
              */
-            isActionEnabled: function (sStatus) {
-                return sStatus === "N";
+         //   isActionEnabled: function (sStatus) {
+        //        return sStatus === "N";
+         //   },
+
+            _clearMessages: function () {
+                var oMessageManager = sap.ui.getCore().getMessageManager();
+                if (oMessageManager) {
+                    oMessageManager.removeAllMessages();
+                }
+            },
+
+            _getBackendMessageText: function (oContext, aPreferTypes) {
+                var oMessageManager = sap.ui.getCore().getMessageManager();
+                if (!oMessageManager) {
+                    return null;
+                }
+
+                var aMessages = oMessageManager.getMessageModel().getData() || [];
+                if (aMessages.length === 0) {
+                    return null;
+                }
+
+                var sPath =
+                    oContext && oContext.getPath && typeof oContext.getPath === "function"
+                        ? oContext.getPath()
+                        : "";
+
+                var aScopedMessages = sPath
+                    ? aMessages.filter(function (oMessage) {
+                          var sTarget =
+                              oMessage && oMessage.getTarget && oMessage.getTarget
+                                  ? oMessage.getTarget()
+                                  : "";
+                          return sTarget && (sTarget === sPath || sTarget.indexOf(sPath + "/") === 0);
+                      })
+                    : [];
+
+                var aPool = aScopedMessages.length ? aScopedMessages : aMessages;
+                var aTypes = aPreferTypes && aPreferTypes.length ? aPreferTypes : ["Success"];
+
+                for (var t = 0; t < aTypes.length; t++) {
+                    for (var i = aPool.length - 1; i >= 0; i--) {
+                        if (aPool[i].getType && aPool[i].getType() === aTypes[t]) {
+                            return aPool[i].getMessage ? aPool[i].getMessage() : null;
+                        }
+                    }
+                }
+
+                var oLast = aPool[aPool.length - 1];
+                return oLast && oLast.getMessage ? oLast.getMessage() : null;
             },
 
             /**

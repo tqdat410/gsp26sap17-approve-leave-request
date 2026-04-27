@@ -22,7 +22,7 @@
 
             _onObjectMatched: function (oEvent) {
                 var sRequestId = oEvent.getParameter("arguments").requestId;
-                var sPath = "/LeaveRequest(RequestID=" + sRequestId + ",IsActiveEntity=true)";
+                var sPath = "/LeaveRequest(RequestID=" + sRequestId + ")";
 
                 this.getView().bindElement({
                     path: sPath,
@@ -73,6 +73,7 @@
                 var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
 
                 this.getView().setBusy(true);
+                this._clearMessages();
 
                 // Invoke OData V4 action
                 var oActionBinding = oContext.getModel().bindContext(
@@ -86,7 +87,13 @@
                     .then(
                         function () {
                             this.getView().setBusy(false);
-                            MessageToast.show(oResourceBundle.getText("approveSuccess"));
+                            var sBackendMessage = this._getBackendMessageText(oContext, [
+                                "Success",
+                                "Information"
+                            ]);
+                            MessageToast.show(
+                                sBackendMessage || oResourceBundle.getText("approveSuccess")
+                            );
                             this._refreshDetail();
                         }.bind(this)
                     )
@@ -94,9 +101,7 @@
                         function (oError) {
                             this.getView().setBusy(false);
                             // Sanitize error message to prevent XSS
-                            var sMessage = oError.message
-                                ? encodeXML(oError.message)
-                                : oResourceBundle.getText("approveError");
+                            var sMessage = oError.message || oResourceBundle.getText("approveError");
                             MessageBox.error(sMessage);
                         }.bind(this)
                     );
@@ -182,6 +187,7 @@
                 var oResourceBundle = this.getView().getModel("i18n").getResourceBundle();
 
                 this.getView().setBusy(true);
+                this._clearMessages();
 
                 // Invoke OData V4 action with parameter
                 var oActionBinding = oContext.getModel().bindContext(
@@ -198,7 +204,13 @@
                     .then(
                         function () {
                             this.getView().setBusy(false);
-                            MessageToast.show(oResourceBundle.getText("rejectSuccess"));
+                            var sBackendMessage = this._getBackendMessageText(oContext, [
+                                "Success",
+                                "Information"
+                            ]);
+                            MessageToast.show(
+                                sBackendMessage || oResourceBundle.getText("rejectSuccess")
+                            );
                             this._refreshDetail();
                         }.bind(this)
                     )
@@ -206,36 +218,63 @@
                         function (oError) {
                             this.getView().setBusy(false);
                             // Sanitize error message to prevent XSS
-                            var sMessage = oError.message
-                                ? encodeXML(oError.message)
-                                : oResourceBundle.getText("rejectError");
+                          var sMessage = oError.message || oResourceBundle.getText("rejectError");
                             MessageBox.error(sMessage);
                         }.bind(this)
                     );
             },
 
-            /**
-             * Determines if actions are enabled based on status
-             * @param {string} sStatus The status code
-             * @returns {boolean} True if actions are enabled
-             */
-            isActionEnabled: function (sStatus) {
-                return sStatus === "N"; // Only enable for 'Submitted' status
+         
+
+            _clearMessages: function () {
+                var oMessageManager = sap.ui.getCore().getMessageManager();
+                if (oMessageManager) {
+                    oMessageManager.removeAllMessages();
+                }
             },
 
-            /**
-             * Called when a list item is pressed
-             * @param {sap.ui.base.Event} oEvent The press event
-             */
-            onItemPress: function (oEvent) {
-                var oItem = oEvent.getSource();
-                var oContext = oItem.getBindingContext();
-                var sRequestId = oContext.getProperty("RequestID");
+            _getBackendMessageText: function (oContext, aPreferTypes) {
+                var oMessageManager = sap.ui.getCore().getMessageManager();
+                if (!oMessageManager) {
+                    return null;
+                }
 
-                this.oRouter.navTo("RouteDetail", {
-                    requestId: sRequestId
-                });
-            }
+                var aMessages = oMessageManager.getMessageModel().getData() || [];
+                if (aMessages.length === 0) {
+                    return null;
+                }
+
+                var sPath =
+                    oContext && oContext.getPath && typeof oContext.getPath === "function"
+                        ? oContext.getPath()
+                        : "";
+
+                var aScopedMessages = sPath
+                    ? aMessages.filter(function (oMessage) {
+                          var sTarget =
+                              oMessage && oMessage.getTarget && oMessage.getTarget
+                                  ? oMessage.getTarget()
+                                  : "";
+                          return sTarget && (sTarget === sPath || sTarget.indexOf(sPath + "/") === 0);
+                      })
+                    : [];
+
+                var aPool = aScopedMessages.length ? aScopedMessages : aMessages;
+                var aTypes = aPreferTypes && aPreferTypes.length ? aPreferTypes : ["Success"];
+
+                for (var t = 0; t < aTypes.length; t++) {
+                    for (var i = aPool.length - 1; i >= 0; i--) {
+                        if (aPool[i].getType && aPool[i].getType() === aTypes[t]) {
+                            return aPool[i].getMessage ? aPool[i].getMessage() : null;
+                        }
+                    }
+                }
+
+                var oLast = aPool[aPool.length - 1];
+                return oLast && oLast.getMessage ? oLast.getMessage() : null;
+            },
+
+        
         });
     }
 );

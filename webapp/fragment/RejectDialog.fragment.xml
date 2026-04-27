@@ -18,7 +18,7 @@
                     id="rejectReasonTextArea"
                     rows="4"
                     width="100%"
-                    maxLength="500"
+                    maxLength="255"
                     placeholder="{i18n>rejectReasonPlaceholder}"/>
             </VBox>
         </content>
