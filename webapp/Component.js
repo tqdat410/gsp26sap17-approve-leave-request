@@ -33,7 +33,6 @@ sap.ui.define([
             },
 
             _handleStartupNavigation: function () {
-                // nếu URL đã có deep link thì không xử lý nữa
                 if (window.location.hash.indexOf("&/") !== -1) {
                     return;
                 }
